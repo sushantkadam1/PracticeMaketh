@@ -30,7 +30,7 @@ class Hashing:
     
     # Make insertion easy
     def __setitem__(self, key, value):
-    	return self.put(key, value)
+    	return self.putFast(key, value)
     
     # Simplest hash function using modulus
     def hashFunction(self, key):
@@ -59,6 +59,29 @@ class Hashing:
             print(newTuple, "Key-value already present")
         else:
             bucket.append(newTuple)
+    
+    # Improve the performance of put by push the element at the start of the
+    # list. Use insert function which will have linear time complexity of O(1)
+    def putFast(self, key, value):
+        # get the hash index
+        hashIndex = self.hashFunction(key)
+        # boolean to check if the data is already present
+        present = False
+        # get the bucket where the data needs to be put
+        bucket = self.hashTable[hashIndex]
+        newTuple = (key, value)
+        
+        # Check in the bucket if the key value pair is present
+        for bucketIndex, kvTuple in enumerate(bucket):
+            if newTuple == kvTuple:
+                present = True 
+                break
+            
+        # Only add the key value in to the bucket if it does not exist
+        if present:
+            print(newTuple, "Key-value already present")
+        else:
+            bucket.insert(0, newTuple)
     
     
     # Find if the Key value pair exists or not
@@ -105,13 +128,21 @@ for i in range(h.size):
     print(h.hashTable[i])
     
 """
-The time complexity to put the element into the hash would be O(1). As we
-are just appending in the end of a list.
+The time complexity to put the element into the hash would be O(k). As we
+are just appending in the end of a python list which is amortized O(1).
+Improved the time complexity by using list.insert function, to not only insert
+at the begining, but also keep the insertion operation fast.
 
-But retrieval time woulf be affected. The time complexity will be O(k), where
-k is the size of the bucket.
+I used "putFast" to do that.
 
-We can reduce the value of k by resizing and rehasing. This would require
-the time complexity of O(n + 1), to rehash and add new element.
+But retrieval time would be affected. The time complexity will be O(k), where
+k number of elements in the bucket.
+We can reduce the value of k by resizing and rehasing by using Load Factor.
+
+On an average, if there are n entries and k is the size of the list 
+there would be n/k entries in each bucket. This value n/k is called the
+load factor that represents the load that is there on our hash.
+This Load Factor needs to be kept low, so that number of entries at one index 
+is less and so is the complexity almost constant - O(1).
 
 """
