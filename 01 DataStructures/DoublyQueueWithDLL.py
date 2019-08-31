@@ -135,10 +135,6 @@ class DoublyQueue:
     def __init__(self):
         self.DLL = DoublyLinkedList()
 
-    # Return True if the linked list is empty
-    def isEmpty(self):
-        return len(self.DLL) == 0
-
     # Add element to the front of the Queue
     def addLeft(self, data):
         self.DLL.insertAtBegining(data)
